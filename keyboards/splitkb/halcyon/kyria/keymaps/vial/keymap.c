@@ -99,9 +99,21 @@ bool rgb_matrix_indicators_user(void) {
             rgb_matrix_set_color(27, RGB_ORANGE);
         }
       break;
-    // case 4:
-    //   set_layer_color(4);
-    //   break;
+    case 4:
+        if (is_keyboard_master())
+        {
+            rgb_matrix_set_color(6, RGB_ORANGE);
+            rgb_matrix_set_color(7, RGB_ORANGE);
+            rgb_matrix_set_color(20, RGB_YELLOW);
+            rgb_matrix_set_color(25, RGB_GREEN);
+            rgb_matrix_set_color(26, RGB_GREEN);
+            rgb_matrix_set_color(28, RGB_GREEN);
+        }
+        else
+        {            
+           
+        }
+      break;
     // case 5: 
     //   set_layer_color(5);
     //   break;
