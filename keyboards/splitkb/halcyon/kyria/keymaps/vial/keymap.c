@@ -37,6 +37,8 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
 #    include OTHER_KEYMAP_C
 #endif // OTHER_KEYMAP_C
 
+#define C_ALT_REPEAT_KEY KC_KP_1
+
 // Indicators without RGB Matrix Effect ​
 // If you want to just use RGB indicators without RGB matrix effect, it is not possible to disable the latter because toggling RGB off will disable everything. You can workaround it with solid effect and colors off using this init function:
 void keyboard_post_init_user(void) {
@@ -111,24 +113,115 @@ bool rgb_matrix_indicators_user(void) {
         }
         else
         {            
-           
         }
       break;
-    // case 5: 
-    //   set_layer_color(5);
-    //   break;
-    // case 6:
-    //   set_layer_color(6);
-    //   break;
-    // case 7:
-    //   set_layer_color(7);
-    //   break;
-    // case 8:
-    //   set_layer_color(8);
-    //   break;
+    case 7:
+        if (is_keyboard_master())
+        {
+        }
+        else
+        {            
+          rgb_matrix_set_color(17, RGB_ORANGE);
+          rgb_matrix_set_color(18, RGB_GREEN);
+          rgb_matrix_set_color(23, RGB_ORANGE);
+          rgb_matrix_set_color(24, RGB_GREEN);
+          rgb_matrix_set_color(29, RGB_ORANGE);
+          rgb_matrix_set_color(30, RGB_GREEN);
+        }
+      break;  
    default:
     rgb_matrix_set_color_all(0, 0, 0);
     break;
   }
   return true;
+}
+
+enum custom_keycodes {
+    M_PPY = SAFE_RANGE,
+};
+
+uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
+    bool cmd = (mods & MOD_MASK_GUI); 
+
+    switch (keycode) {
+        case KC_P: return M_PPY;
+        case LALT_T(KC_S): return KC_C;
+        case KC_O: return KC_A;
+        case KC_C: 
+            if (cmd) {
+                return LGUI(KC_V);
+            }
+            break;
+        case KC_X: 
+            if (cmd) {
+                return LGUI(KC_V);
+            }
+            break;
+    }
+
+    return KC_TRNS;
+}
+
+bool process_custom_alt_repeat_key(int prev_keycode, int prev_mods) {
+    switch (prev_keycode) {
+        case KC_B:
+            SEND_STRING("etween");
+            return false;
+        case KC_SEMICOLON:
+            send_char(')');
+            return false;
+    }
+
+    return true;
+}
+
+bool process_record_user(uint16_t keycode, keyrecord_t* record) {
+    switch (keycode) {
+        case C_ALT_REPEAT_KEY:
+            if (record->event.pressed) {
+               return process_custom_alt_repeat_key(get_last_keycode(), get_last_mods()); 
+            }
+
+            return true;
+        case M_PPY:
+            if (get_repeat_key_count() == -1)
+            {
+                if (record->event.pressed) {
+                    SEND_STRING(/*p*/"py");
+                }
+            }
+            
+            return false;
+    }
+
+    return true;
+}
+
+// Ignore backspace, nav keys etc for alt repeat. So cmd c, repeat triggers cmd v even after switching to another tab/app
+bool remember_last_key_user(uint16_t keycode, keyrecord_t* record, uint8_t* remembered_mods) {
+    switch (keycode) {
+        case KC_BSPC:
+        case KC_DEL:
+        case KC_LEFT:
+        case KC_RIGHT:
+        case KC_UP:
+        case KC_DOWN:
+        case KC_HOME:
+        case KC_END:
+        case KC_PGUP:
+        case KC_PGDN:
+        case KC_TAB:
+        case KC_ENTER:
+        case KC_SPC:
+        case LSFT_T(KC_BSPC):
+        case RALT_T(KC_LEFT):
+        case RGUI_T(KC_DOWN):
+        case RCTL_T(KC_RIGHT):
+        case LT(2, KC_TAB):
+        case LT(3, KC_SPC):
+        case C_ALT_REPEAT_KEY:
+            return false;
+    }
+
+    return true;
 }
