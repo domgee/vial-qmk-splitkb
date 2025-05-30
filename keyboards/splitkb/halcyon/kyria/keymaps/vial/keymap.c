@@ -91,7 +91,15 @@ bool rgb_matrix_indicators_user(void) {
             rgb_matrix_set_color(14, RGB_BLUE);
             rgb_matrix_set_color(15, RGB_BLUE);
             rgb_matrix_set_color(16, RGB_BLUE);
+            rgb_matrix_set_color(17, RGB_YELLOW);
+            rgb_matrix_set_color(20, RGB_YELLOW);
+            rgb_matrix_set_color(21, RGB_YELLOW);
+            rgb_matrix_set_color(22, RGB_YELLOW);
             rgb_matrix_set_color(23, RGB_BLUE);
+            rgb_matrix_set_color(26, RGB_YELLOW);
+            rgb_matrix_set_color(27, RGB_YELLOW);
+            rgb_matrix_set_color(28, RGB_YELLOW);
+            rgb_matrix_set_color(29, RGB_YELLOW);
         }
         else
         {            
@@ -157,6 +165,21 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
                 return LGUI(KC_V);
             }
             break;
+
+        // TODO: use get_repeat_key_count() to increment for each press
+        case KC_0: return KC_1;
+        case KC_1: return KC_2;
+        case KC_2: return KC_3;
+        case KC_3: return KC_4;
+        case KC_4: return KC_5;
+        case RALT_T(KC_4): return KC_5;
+        case KC_5: return KC_6;
+        case RGUI_T(KC_5): return KC_6;
+        case KC_6: return KC_7;
+        case RCTL_T(KC_6): return KC_7;
+        case KC_7: return KC_8;
+        case KC_8: return KC_9;
+        case KC_9: return KC_0;
     }
 
     return KC_TRNS;
@@ -190,7 +213,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                     SEND_STRING(/*p*/"py");
                 }
             }
-            
+
             return false;
     }
 
