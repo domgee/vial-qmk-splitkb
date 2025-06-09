@@ -57,9 +57,8 @@ void keyboard_post_init_user(void) {
 // LED 6 is lower outer thumb key
 bool rgb_matrix_indicators_user(void) {
   switch (biton32(layer_state)) {
-    // case 1:
-    //   set_layer_color(RGB_RED);
-    //   break;
+// layer_state_t layer_state_set_user(layer_state_t state) {
+//     switch (get_highest_layer(state)) {
     case 2:
         if (is_keyboard_master())
         {
@@ -128,13 +127,18 @@ bool rgb_matrix_indicators_user(void) {
         {
         }
         else
-        {            
-          rgb_matrix_set_color(17, RGB_ORANGE);
-          rgb_matrix_set_color(18, RGB_GREEN);
-          rgb_matrix_set_color(23, RGB_ORANGE);
-          rgb_matrix_set_color(24, RGB_GREEN);
-          rgb_matrix_set_color(29, RGB_ORANGE);
-          rgb_matrix_set_color(30, RGB_GREEN);
+        { 
+            rgb_matrix_set_color(15, RGB_ORANGE);
+            rgb_matrix_set_color(21, RGB_ORANGE);
+            rgb_matrix_set_color(27, RGB_ORANGE);           
+
+            rgb_matrix_set_color(17, RGB_ORANGE);
+            rgb_matrix_set_color(23, RGB_ORANGE);
+            rgb_matrix_set_color(29, RGB_ORANGE);
+
+            rgb_matrix_set_color(18, RGB_GREEN);
+            rgb_matrix_set_color(24, RGB_GREEN);
+            rgb_matrix_set_color(30, RGB_GREEN);
         }
       break;  
    default:
@@ -158,6 +162,9 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
         case KC_C: 
             if (cmd) {
                 return LGUI(KC_V);
+            }
+            else {
+                return KC_S;
             }
             break;
         case KC_X: 
@@ -188,10 +195,13 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
 bool process_custom_alt_repeat_key(int prev_keycode, int prev_mods) {
     switch (prev_keycode) {
         case KC_B:
-            SEND_STRING("etween");
+            SEND_STRING("ecause");
             return false;
         case KC_SEMICOLON:
             send_char(')');
+            return false;
+        case KC_C:
+            send_char('#');
             return false;
     }
 
