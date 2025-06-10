@@ -101,7 +101,7 @@ bool rgb_matrix_indicators_user(void) {
             rgb_matrix_set_color(29, RGB_YELLOW);
         }
         else
-        {            
+        {
             rgb_matrix_set_color(20, RGB_ORANGE);
             rgb_matrix_set_color(21, RGB_ORANGE);
             rgb_matrix_set_color(22, RGB_ORANGE);
@@ -119,7 +119,7 @@ bool rgb_matrix_indicators_user(void) {
             rgb_matrix_set_color(28, RGB_GREEN);
         }
         else
-        {            
+        {
         }
       break;
     case 7:
@@ -127,10 +127,10 @@ bool rgb_matrix_indicators_user(void) {
         {
         }
         else
-        { 
+        {
             rgb_matrix_set_color(15, RGB_ORANGE);
             rgb_matrix_set_color(21, RGB_ORANGE);
-            rgb_matrix_set_color(27, RGB_ORANGE);           
+            rgb_matrix_set_color(27, RGB_ORANGE);
 
             rgb_matrix_set_color(17, RGB_ORANGE);
             rgb_matrix_set_color(23, RGB_ORANGE);
@@ -140,7 +140,7 @@ bool rgb_matrix_indicators_user(void) {
             rgb_matrix_set_color(24, RGB_GREEN);
             rgb_matrix_set_color(30, RGB_GREEN);
         }
-      break;  
+      break;
    default:
     rgb_matrix_set_color_all(0, 0, 0);
     break;
@@ -150,16 +150,26 @@ bool rgb_matrix_indicators_user(void) {
 
 enum custom_keycodes {
     M_PPY = SAFE_RANGE,
+    M_REPEAT_0,
+    M_REPEAT_1,
+    M_REPEAT_2,
+    M_REPEAT_3,
+    M_REPEAT_4,
+    M_REPEAT_5,
+    M_REPEAT_6,
+    M_REPEAT_7,
+    M_REPEAT_8,
+    M_REPEAT_9,
 };
 
 uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
-    bool cmd = (mods & MOD_MASK_GUI); 
+    bool cmd = (mods & MOD_MASK_GUI);
 
     switch (keycode) {
         case KC_P: return M_PPY;
         case LALT_T(KC_S): return KC_C;
         case KC_O: return KC_A;
-        case KC_C: 
+        case KC_C:
             if (cmd) {
                 return LGUI(KC_V);
             }
@@ -167,26 +177,25 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
                 return KC_S;
             }
             break;
-        case KC_X: 
+        case KC_X:
             if (cmd) {
                 return LGUI(KC_V);
             }
             break;
 
-        // TODO: use get_repeat_key_count() to increment for each press
-        case KC_0: return KC_1;
-        case KC_1: return KC_2;
-        case KC_2: return KC_3;
-        case KC_3: return KC_4;
-        case KC_4: return KC_5;
-        case RALT_T(KC_4): return KC_5;
-        case KC_5: return KC_6;
-        case RGUI_T(KC_5): return KC_6;
-        case KC_6: return KC_7;
-        case RCTL_T(KC_6): return KC_7;
-        case KC_7: return KC_8;
-        case KC_8: return KC_9;
-        case KC_9: return KC_0;
+        case KC_0: return M_REPEAT_0;
+        case KC_1: return M_REPEAT_1;
+        case KC_2: return M_REPEAT_2;
+        case KC_3: return M_REPEAT_3;
+        case KC_4: return M_REPEAT_4;
+        case RALT_T(KC_4): return M_REPEAT_4;
+        case KC_5: return M_REPEAT_5;
+        case RGUI_T(KC_5): return M_REPEAT_5;
+        case KC_6: return M_REPEAT_6;
+        case RCTL_T(KC_6): return M_REPEAT_6;
+        case KC_7: return M_REPEAT_7;
+        case KC_8: return M_REPEAT_8;
+        case KC_9:  return M_REPEAT_9;
     }
 
     return KC_TRNS;
@@ -212,7 +221,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     switch (keycode) {
         case C_ALT_REPEAT_KEY:
             if (record->event.pressed) {
-               return process_custom_alt_repeat_key(get_last_keycode(), get_last_mods()); 
+               return process_custom_alt_repeat_key(get_last_keycode(), get_last_mods());
             }
 
             return true;
@@ -222,6 +231,26 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 if (record->event.pressed) {
                     SEND_STRING(/*p*/"py");
                 }
+            }
+
+            return false;
+
+        case M_REPEAT_0:
+        case M_REPEAT_1:
+        case M_REPEAT_2:
+        case M_REPEAT_3:
+        case M_REPEAT_4:
+        case M_REPEAT_5:
+        case M_REPEAT_6:
+        case M_REPEAT_7:
+        case M_REPEAT_8:
+        case M_REPEAT_9:
+            if (record->event.pressed) {
+                int num = keycode - M_REPEAT_0;
+                num -= get_repeat_key_count(); // repeat key count is -ve
+                char str[7]; 
+                sprintf(str, "%d", num);
+                SEND_STRING(str);
             }
 
             return false;
